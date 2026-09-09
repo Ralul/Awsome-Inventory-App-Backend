@@ -1,0 +1,20 @@
+@Awsome_Invontory_App_Backend_HostAddress = http://localhost:5174
+
+POST {{Awsome_Invontory_App_Backend_HostAddress}}/users/authenticate/
+Content-Type: application/json
+
+{
+    "username": "test",
+    "password": "test"
+}
+
+> {%
+    client.global.set("token", response.body.token);
+    client.log("JWT stored: " + response.body.token);
+%}
+
+###
+
+GET {{Awsome_Invontory_App_Backend_HostAddress}}/Users
+Authorization: Bearer {{token}}
+
