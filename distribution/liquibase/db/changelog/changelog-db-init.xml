@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- ============================================================ -->
+    <!-- 1. Create tables                                             -->
+    <!-- ============================================================ -->
+    <changeSet id="20f6d3ea-e822-4e10-a2c1-bbd7c3f90051" author="user">
+
+    </changeSet>
+
+    <!-- ============================================================ -->
+    <!-- 2. Foreign keys                                              -->
+    <!-- ============================================================ -->
+    <changeSet id="3c9bbbc3-8ece-4588-a39e-9307dca1bc91" author="user">
+        
+    </changeSet>
+</databaseChangeLog>

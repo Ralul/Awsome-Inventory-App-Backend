@@ -1,29 +1,14 @@
 #!/bin/bash
 
-wait 
+DB_USER="${DB_USER:-inventoryAppUser}"
+DB_PASSWORD="${DB_PASSWORD:-1ChangeThisForProduction!}"
+
+echo DB_USER: ${DB_USER}
+echo DB_PASSWORD: ${DB_PASSWORD}
 
 psql -U postgres <<-EOSQL
-    CREATE USER docker WITH PASSWORD 'docker';
-    CREATE DATABASE pythontest_db;
-    GRANT ALL PRIVILEGES ON DATABASE pythontest_db TO docker;
-    \connect pythontest_db docker
-    BEGIN;
-        CREATE TABLE DOCUMENT_TEMPLATE(
-            ID INTEGER NOT NULL,
-            NAME TEXT,
-            SHORT_DESCRIPTION TEXT,
-            AUTHOR TEXT,
-            DESCRIPTION TEXT,
-            CONTENT TEXT,
-            LAST_UPDATED DATE,
-            CREATED DATE
-        );
-    INSERT INTO DOCUMENT_TEMPLATE(id,name, short_description, author, description,content, last_updated,created)
-    SELECT id, 'name', md5(random()::text), 'name2'
-        ,md5(random()::text),md5(random()::text)
-        ,NOW() - '1 day'::INTERVAL * (RANDOM()::int * 100)
-        ,NOW() - '1 day'::INTERVAL * (RANDOM()::int * 100 + 100)
-    FROM generate_series(1,100) id;
-    COMMIT;
-    select * from document_template limit 3;
+    DROP USER IF EXISTS "${DB_USER}";
+    CREATE USER "${DB_USER}" WITH PASSWORD '${DB_PASSWORD}';
+    DROP DATABASE IF EXISTS inventory_app;
+    CREATE DATABASE inventory_app OWNER "${DB_USER}";
 EOSQL
