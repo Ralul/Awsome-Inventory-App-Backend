@@ -1,14 +1,15 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace Awsome_Invontory_App_Backend.Entities;
 
+[Table("users")]
 public class User
 {
-    public int Id { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string Username { get; set; }
+    [Column("id")] public int Id { get; set; }
+    [Column("first_name")] public string FirstName { get; set; }
+    [Column("last_name")] public string LastName { get; set; }
+    [Column("username")] public string Username { get; set; }
 
-    [JsonIgnore]
-    public string Password { get; set; }
+    [JsonIgnore] [Column("password")] public string Password { get; set; }
 }

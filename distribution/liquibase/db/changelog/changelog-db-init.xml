@@ -9,7 +9,15 @@
     <!-- 1. Create tables                                             -->
     <!-- ============================================================ -->
     <changeSet id="20f6d3ea-e822-4e10-a2c1-bbd7c3f90051" author="user">
-
+        <createTable tableName="users" >
+            <column name="id" type="int" >
+                <constraints primaryKey="true" />
+            </column>
+            <column name="first_name" type="varchar" />
+            <column name="last_name" type="varchar" />
+            <column name="username" type="varchar" />
+            <column name="password" type="varchar" />
+        </createTable>
     </changeSet>
 
     <!-- ============================================================ -->
