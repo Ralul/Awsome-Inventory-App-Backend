@@ -11,5 +11,6 @@ public class User
     [Column("last_name")] public string LastName { get; set; }
     [Column("username")] public string Username { get; set; }
 
-    [JsonIgnore] [Column("password")] public string Password { get; set; }
+    [JsonIgnore] [Column("hashed_password")] public string HashedPassword { get; set; }
+    [JsonIgnore] [Column("salt")] public string Salt { get; set; }
 }

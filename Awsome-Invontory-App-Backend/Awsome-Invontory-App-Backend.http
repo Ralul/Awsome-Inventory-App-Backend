@@ -18,3 +18,15 @@ Content-Type: application/json
 GET {{Awsome_Invontory_App_Backend_HostAddress}}/Users
 Authorization: Bearer {{token}}
 
+###
+POST {{Awsome_Invontory_App_Backend_HostAddress}}/Users/register
+Content-Type: application/json
+
+{
+    "FirstName": "test",
+    "LastName": "test",
+    "Username": "test",
+    "Password": "test",
+    "PasswordConfirmation": "test"
+}
+

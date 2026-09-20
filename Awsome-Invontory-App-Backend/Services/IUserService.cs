@@ -5,6 +5,7 @@ namespace Awsome_Invontory_App_Backend.Services;
 
 public interface IUserService
 {
+    AuthenticateResponse Register(RegisterRequest request);
     AuthenticateResponse Authenticate(AuthenticateRequest model);
     IEnumerable<User> GetAll();
     User? GetById(int id);

@@ -28,6 +28,14 @@ public class UsersController : ControllerBase
         return Ok(response);
     }
 
+    [HttpPost("register")]
+    public IActionResult Register(RegisterRequest model)
+    {
+        var response = _userService.Register(model);
+
+        return Ok(response);
+    }
+
     [Authorize]
     [HttpGet]
     public IActionResult GetAll()

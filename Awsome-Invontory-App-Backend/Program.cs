@@ -1,5 +1,6 @@
 using Awsome_Invontory_App_Backend.Helpers;
 using Awsome_Invontory_App_Backend.Services;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
     // configure DI for application services
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<DataContext, DataContext>();
+    services.AddScoped<Authenitcation, Authenitcation>();
 }
 
 var app = builder.Build();
@@ -31,6 +33,23 @@ var app = builder.Build();
     app.UseMiddleware<JwtMiddleware>();
 
     app.MapControllers();
+    //app.Run();
     
-    app.Run();
+    RunTest();
+}
+
+void RunTest()
+{
+    var auth = new Authenitcation();
+    
+    var password = "somePassword";
+
+    var (hash, salt) = auth.SaltAndHash(password);
+    
+    Console.WriteLine($"Salt: {salt}");
+    Console.WriteLine($"Hash: {hash}");
+    
+    var result = auth.VerifyPassword(password, hash, salt);
+
+    Console.WriteLine(result ? "Password verification succeeded":"Password verification failed");
 }
