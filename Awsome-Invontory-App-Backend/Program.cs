@@ -33,23 +33,5 @@ var app = builder.Build();
     app.UseMiddleware<JwtMiddleware>();
 
     app.MapControllers();
-    //app.Run();
-    
-    RunTest();
-}
-
-void RunTest()
-{
-    var auth = new Authenitcation();
-    
-    var password = "somePassword";
-
-    var (hash, salt) = auth.SaltAndHash(password);
-    
-    Console.WriteLine($"Salt: {salt}");
-    Console.WriteLine($"Hash: {hash}");
-    
-    var result = auth.VerifyPassword(password, hash, salt);
-
-    Console.WriteLine(result ? "Password verification succeeded":"Password verification failed");
+    app.Run();
 }

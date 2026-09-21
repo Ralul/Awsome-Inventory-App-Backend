@@ -9,14 +9,15 @@
     <!-- 1. Create tables                                             -->
     <!-- ============================================================ -->
     <changeSet id="20f6d3ea-e822-4e10-a2c1-bbd7c3f90051" author="user">
-        <createTable tableName="users" >
-            <column name="id" type="int" >
-                <constraints primaryKey="true" />
+        <createTable tableName="users">
+            <column name="id" type="int">
+                <constraints primaryKey="true"/>
             </column>
-            <column name="first_name" type="varchar" />
-            <column name="last_name" type="varchar" />
-            <column name="username" type="varchar" />
-            <column name="password" type="varchar" />
+            <column name="first_name" type="varchar"/>
+            <column name="last_name" type="varchar"/>
+            <column name="username" type="varchar"/>
+            <column name="hashed_password" type="varchar"/>
+            <column name="salt" type="varchar"/>
         </createTable>
     </changeSet>
 
@@ -24,6 +25,6 @@
     <!-- 2. Foreign keys                                              -->
     <!-- ============================================================ -->
     <changeSet id="3c9bbbc3-8ece-4588-a39e-9307dca1bc91" author="user">
-        
+
     </changeSet>
 </databaseChangeLog>

@@ -39,11 +39,16 @@ public class UserService : IUserService
         
         var user = new User()
         {
+            Id = _dataContext.Users.Count() + 1,
             FirstName = request.FirstName,
             LastName = request.LastName,
             Username = request.Username,
-            HashedPassword = hash
+            HashedPassword = hash,
+            Salt = salt
         };
+        
+        _dataContext.Users.Add(user);
+        _dataContext.SaveChanges();
         
         return new AuthenticateResponse(user,  GenerateJwtToken(user));
         
@@ -51,6 +56,9 @@ public class UserService : IUserService
 
     public AuthenticateResponse Authenticate(AuthenticateRequest model)
     {
+        // todo add logic to search for user (by user name) and check passwordhash with salt with giben passwrod from request
+        // if succed the retrung toekn, else unauthorized
+        
         // var user = _dataContext.Users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
 
         var user = new User()
