@@ -9,7 +9,7 @@ public class Authenitcation
     private const int Iterations = 35000;
     private static readonly HashAlgorithmName HashAlgorithm = HashAlgorithmName.SHA512;
 
-    public string HashPasword(string password, out byte[] salt)
+    private string HashPassword(string password, out byte[] salt)
     {
         salt = RandomNumberGenerator.GetBytes(KeySize);
         var hash = Rfc2898DeriveBytes.Pbkdf2(
@@ -21,7 +21,7 @@ public class Authenitcation
         return Convert.ToHexString(hash);
     }
 
-    public bool VerifyPassword(string password, string hash, string salt)
+    public static bool VerifyPassword(string password, string hash, string salt)
     {
         var hashToCompare = Rfc2898DeriveBytes.Pbkdf2(password, Convert.FromHexString(salt), Iterations, HashAlgorithm, KeySize);
         return CryptographicOperations.FixedTimeEquals(hashToCompare, Convert.FromHexString(hash));
@@ -29,7 +29,7 @@ public class Authenitcation
 
     public (string hash, string salt) SaltAndHash(string password)
     {
-        var hash = HashPasword(password, out var salt);
+        var hash = HashPassword(password, out var salt);
         var saltString = Convert.ToHexString(salt);
         return (hash, saltString);
     }

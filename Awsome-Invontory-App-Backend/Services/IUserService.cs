@@ -8,5 +8,5 @@ public interface IUserService
     AuthenticateResponse Register(RegisterRequest request);
     AuthenticateResponse Authenticate(AuthenticateRequest model);
     IEnumerable<User> GetAll();
-    User? GetById(int id);
+    User? GetById(Guid id);
 }

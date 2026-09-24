@@ -1,11 +1,9 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using Awsome_Invontory_App_Backend.Entities;
 using Awsome_Invontory_App_Backend.Helpers;
 using Awsome_Invontory_App_Backend.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -31,17 +29,17 @@ public class UserService : IUserService
             throw new Exception("Passwords do not match");
         }
 
+        if (_dataContext.Users.Any(x => x.Email == request.Email))
+        {
+            throw new Exception("User with same email address already exists");
+        }
+
         
         var (hash, salt) = _authencation.SaltAndHash(request.Password);
         
-        Console.WriteLine(hash);
-        Console.WriteLine(salt);
-        
         var user = new User()
         {
-            Id = _dataContext.Users.Count() + 1,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
+            Email = request.Email,
             Username = request.Username,
             HashedPassword = hash,
             Salt = salt
@@ -51,31 +49,23 @@ public class UserService : IUserService
         _dataContext.SaveChanges();
         
         return new AuthenticateResponse(user,  GenerateJwtToken(user));
-        
     }
 
     public AuthenticateResponse Authenticate(AuthenticateRequest model)
     {
-        // todo add logic to search for user (by user name) and check passwordhash with salt with giben passwrod from request
-        // if succed the retrung toekn, else unauthorized
-        
-        // var user = _dataContext.Users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
+        var matchingUser = _dataContext.Users.FirstOrDefault(x => x.Email == model.Email);
 
-        var user = new User()
+        if (matchingUser == null)
         {
-            FirstName = "",
-            LastName = "",
-            Username = "",
-            HashedPassword = ""
-        };
+            throw new Exception("User not found");
+        }
         
-        // return null if user not found
-        if (user == null) return null;
+        if (Authenitcation.VerifyPassword(model.Password, matchingUser.HashedPassword, matchingUser.Salt))
+        {
+            return new AuthenticateResponse(matchingUser, GenerateJwtToken(matchingUser));
+        }
 
-        // authentication successful so generate jwt token
-        var token = GenerateJwtToken(user);
-
-        return new AuthenticateResponse(user, token);
+        throw new Exception("Passwords do not match");
     }
     
     public IEnumerable<User> GetAll()
@@ -83,20 +73,9 @@ public class UserService : IUserService
         return _dataContext.Users;
     }
 
-    public User? GetById(int id)
+    public User? GetById(Guid id)
     {
         return _dataContext.Users.FirstOrDefault(x => x.Id == id);
-    }
-
-    // helper methods
-    private byte[] CalculateSHA256(string str)
-    {
-        var sha256 = SHA256Managed.Create();
-        byte[] hashValue;
-        var objUtf8 = new UTF8Encoding();
-        hashValue = sha256.ComputeHash(objUtf8.GetBytes(str));
-
-        return hashValue;
     }
 
     private string GenerateJwtToken(User user)
@@ -106,7 +85,7 @@ public class UserService : IUserService
         var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
+            Subject = new ClaimsIdentity([new Claim("id", user.Id.ToString())]),
             Expires = DateTime.UtcNow.AddDays(7),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };

@@ -6,11 +6,10 @@ namespace Awsome_Invontory_App_Backend.Entities;
 [Table("users")]
 public class User
 {
-    [Column("id")] public int Id { get; set; }
-    [Column("first_name")] public string FirstName { get; set; }
-    [Column("last_name")] public string LastName { get; set; }
-    [Column("username")] public string Username { get; set; }
+    [Column("id")] public Guid Id { get; init; }
+    [Column("email")] public required string Email { get; init; }
+    [Column("username")] public required string Username { get; init; }
 
-    [JsonIgnore] [Column("hashed_password")] public string HashedPassword { get; set; }
-    [JsonIgnore] [Column("salt")] public string Salt { get; set; }
+    [JsonIgnore] [Column("hashed_password")] public string HashedPassword { get; init; }
+    [JsonIgnore] [Column("salt")] public string Salt { get; init; }
 }
