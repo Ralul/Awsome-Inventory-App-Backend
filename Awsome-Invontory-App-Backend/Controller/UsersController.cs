@@ -1,6 +1,7 @@
 using Awsome_Invontory_App_Backend.Helpers;
 using Awsome_Invontory_App_Backend.Models;
 using Awsome_Invontory_App_Backend.Services;
+using Microsoft.AspNetCore.Cors;
 
 namespace Awsome_Invontory_App_Backend.Controller;
 
@@ -29,6 +30,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("register")]
+    [EnableCors("AllowAngular")]
     public IActionResult Register(RegisterRequest model)
     {
         var response = _userService.Register(model);

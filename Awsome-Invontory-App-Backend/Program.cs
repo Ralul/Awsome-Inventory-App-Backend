@@ -1,6 +1,5 @@
 using Awsome_Invontory_App_Backend.Helpers;
 using Awsome_Invontory_App_Backend.Services;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,20 +16,26 @@ var builder = WebApplication.CreateBuilder(args);
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<DataContext, DataContext>();
     services.AddScoped<Authenitcation, Authenitcation>();
+    
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAngular", policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") // Allow only Angular app
+                .AllowAnyMethod() // Allow GET, POST, PUT, DELETE, etc.
+                .AllowAnyHeader() // Allow any headers
+                .AllowCredentials(); // Allow cookies/auth headers
+        });
+    });
 }
 
 var app = builder.Build();
 
 // configure HTTP request pipeline
 {
-    // global cors policy
-    app.UseCors(x => x
-        .AllowAnyOrigin()
-        .AllowAnyMethod()
-        .AllowAnyHeader());
-
     // custom jwt auth middleware
     app.UseMiddleware<JwtMiddleware>();
+    app.UseCors("AllowAngular");
 
     app.MapControllers();
     app.Run();
