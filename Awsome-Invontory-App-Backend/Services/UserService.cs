@@ -15,7 +15,7 @@ public class UserService : IUserService
     private readonly AppSettings _appSettings;
     private readonly Authenitcation _authencation;
 
-    public UserService(DataContext dataContext, IOptions<AppSettings> appSettings,  Authenitcation authencation)
+    public UserService(DataContext dataContext, IOptions<AppSettings> appSettings, Authenitcation authencation)
     {
         _dataContext = dataContext;
         _appSettings = appSettings.Value;
@@ -24,19 +24,13 @@ public class UserService : IUserService
 
     public AuthenticateResponse Register(RegisterRequest request)
     {
-        if (request.Password != request.PasswordConfirmation)
-        {
-            throw new Exception("Passwords do not match");
-        }
-
         if (_dataContext.Users.Any(x => x.Email == request.Email))
         {
             throw new Exception("User with same email address already exists");
         }
-
         
         var (hash, salt) = _authencation.SaltAndHash(request.Password);
-        
+
         var user = new User()
         {
             Email = request.Email,
@@ -44,11 +38,11 @@ public class UserService : IUserService
             HashedPassword = hash,
             Salt = salt
         };
-        
+
         _dataContext.Users.Add(user);
         _dataContext.SaveChanges();
-        
-        return new AuthenticateResponse(user,  GenerateJwtToken(user));
+
+        return new AuthenticateResponse(user, GenerateJwtToken(user));
     }
 
     public AuthenticateResponse Authenticate(AuthenticateRequest model)
@@ -59,7 +53,7 @@ public class UserService : IUserService
         {
             throw new Exception("User not found");
         }
-        
+
         if (Authenitcation.VerifyPassword(model.Password, matchingUser.HashedPassword, matchingUser.Salt))
         {
             return new AuthenticateResponse(matchingUser, GenerateJwtToken(matchingUser));
@@ -67,7 +61,7 @@ public class UserService : IUserService
 
         throw new Exception("Passwords do not match");
     }
-    
+
     public IEnumerable<User> GetAll()
     {
         return _dataContext.Users;
@@ -87,7 +81,8 @@ public class UserService : IUserService
         {
             Subject = new ClaimsIdentity([new Claim("id", user.Id.ToString())]),
             Expires = DateTime.UtcNow.AddDays(7),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            SigningCredentials =
+                new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);

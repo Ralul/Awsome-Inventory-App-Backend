@@ -6,7 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 // add services to DI container
 {
     var services = builder.Services;
-    services.AddCors();
     services.AddControllers();
 
     // configure strongly typed settings object
@@ -16,17 +15,6 @@ var builder = WebApplication.CreateBuilder(args);
     services.AddScoped<IUserService, UserService>();
     services.AddScoped<DataContext, DataContext>();
     services.AddScoped<Authenitcation, Authenitcation>();
-    
-    builder.Services.AddCors(options =>
-    {
-        options.AddPolicy("AllowAngular", policy =>
-        {
-            policy.WithOrigins("http://localhost:4200") // Allow only Angular app
-                .AllowAnyMethod() // Allow GET, POST, PUT, DELETE, etc.
-                .AllowAnyHeader() // Allow any headers
-                .AllowCredentials(); // Allow cookies/auth headers
-        });
-    });
 }
 
 var app = builder.Build();
@@ -35,7 +23,6 @@ var app = builder.Build();
 {
     // custom jwt auth middleware
     app.UseMiddleware<JwtMiddleware>();
-    app.UseCors("AllowAngular");
 
     app.MapControllers();
     app.Run();

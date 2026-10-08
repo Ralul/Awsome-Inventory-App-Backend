@@ -1,7 +1,6 @@
 using Awsome_Invontory_App_Backend.Helpers;
 using Awsome_Invontory_App_Backend.Models;
 using Awsome_Invontory_App_Backend.Services;
-using Microsoft.AspNetCore.Cors;
 
 namespace Awsome_Invontory_App_Backend.Controller;
 
@@ -9,31 +8,20 @@ using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("[controller]")]
-public class UsersController : ControllerBase
+public class UsersController(IUserService userService) : ControllerBase
 {
-    private IUserService _userService;
-
-    public UsersController(IUserService userService)
-    {
-        _userService = userService;
-    }
-
     [HttpPost("authenticate")]
     public IActionResult Authenticate(AuthenticateRequest model)
     {
-        var response = _userService.Authenticate(model);
-
-        if (response == null)
-            return BadRequest(new { message = "Username or password is incorrect" });
+        var response = userService.Authenticate(model);
 
         return Ok(response);
     }
 
     [HttpPost("register")]
-    [EnableCors("AllowAngular")]
     public IActionResult Register(RegisterRequest model)
     {
-        var response = _userService.Register(model);
+        var response = userService.Register(model);
 
         return Ok(response);
     }
@@ -42,7 +30,7 @@ public class UsersController : ControllerBase
     [HttpGet]
     public IActionResult GetAll()
     {
-        var users = _userService.GetAll();
+        var users = userService.GetAll();
         return Ok(users);
     }
 }
