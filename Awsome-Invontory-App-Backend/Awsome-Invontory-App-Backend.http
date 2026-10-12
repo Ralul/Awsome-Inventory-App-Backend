@@ -1,5 +1,6 @@
 @Awsome_Invontory_App_Backend_HostAddress = http://localhost:5174
 
+
 POST {{Awsome_Invontory_App_Backend_HostAddress}}/users/authenticate/
 Content-Type: application/json
 
@@ -28,4 +29,13 @@ Content-Type: application/json
     "Password": "test",
     "PasswordConfirmation": "test"
 }
+
+> {% 
+    client.global.set("auth_token", response.body.token);
+ %}
+###
+
+GET {{Awsome_Invontory_App_Backend_HostAddress}}/Items
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
 
