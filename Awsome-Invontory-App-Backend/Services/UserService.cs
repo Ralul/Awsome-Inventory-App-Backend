@@ -13,13 +13,13 @@ public class UserService : IUserService
 {
     private readonly DataContext _dataContext;
     private readonly AppSettings _appSettings;
-    private readonly Authenitcation _authencation;
+    private readonly Authenitcation _authentication;
 
-    public UserService(DataContext dataContext, IOptions<AppSettings> appSettings, Authenitcation authencation)
+    public UserService(DataContext dataContext, IOptions<AppSettings> appSettings, Authenitcation authentication)
     {
         _dataContext = dataContext;
         _appSettings = appSettings.Value;
-        _authencation = authencation;
+        _authentication = authentication;
     }
 
     public AuthenticateResponse Register(RegisterRequest request)
@@ -29,7 +29,7 @@ public class UserService : IUserService
             throw new Exception("User with same email address already exists");
         }
         
-        var (hash, salt) = _authencation.SaltAndHash(request.Password);
+        var (hash, salt) = _authentication.SaltAndHash(request.Password);
 
         var user = new User()
         {
